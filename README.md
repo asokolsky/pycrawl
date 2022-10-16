@@ -20,8 +20,9 @@ From [primer](https://realpython.com/python-virtual-environments-a-primer/):
 * [docs](https://docs.scrapy.org/en/latest/index.html)
 * [repo](https://github.com/scrapy/scrapy)
 * [intro](https://www.scrapingbee.com/blog/web-scraping-with-scrapy/)
-* [example](https://www.scrapingbee.com/blog/crawling-python/#web-crawling-with-scrapy)
-* [another example](https://github.com/SherMarri/scrapy-examples)
+* [simple use example](https://doc.scrapy.org/en/latest/topics/practices.html)
+* [example1](https://github.com/SherMarri/scrapy-examples)
+* [example2](https://www.scrapingbee.com/blog/crawling-python/#web-crawling-with-scrapy)
 
 ## Typing Verification
 ```
