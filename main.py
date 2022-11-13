@@ -123,7 +123,7 @@ def main() -> None:
     try:
         socket.gethostbyname(site)
     except Exception:
-        log.error("Faied to resolve '%s'", site)
+        log.error("Failed to resolve '%s'", site)
         return
 
     adjust_scrapy_logging()
