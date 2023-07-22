@@ -1,38 +1,41 @@
 import argparse
-from datetime import datetime
+# from datetime import datetime
 import logging
 from scrapy.crawler import CrawlerProcess
 from scrapy.http import Request
 from scrapy.http.response.text import TextResponse
 from scrapy.spiders import Spider
 import socket
-from sys import stderr
+# from sys import stderr
 from typing import Generator, List, Optional, Tuple
 
-#msg_format = "%(asctime)s.%(msecs)03d %(levelname)s %(threadName)s %(filename)s:%(lineno)s %(message)s"
-#msg_format = "%(asctime)s.%(msecs)03d %(levelname)s %(message)s"
+# msg_format = "%(asctime)s.%(msecs)03d %(levelname)s %(threadName)s %(filename)s:%(lineno)s %(message)s"
+# msg_format = "%(asctime)s.%(msecs)03d %(levelname)s %(message)s"
 msg_format = "%(levelname)s: %(message)s"
 date_format = '%m%d.%H%M%S'
 
-#log_level = logging.DEBUG
-#log_level = logging.INFO
+# log_level = logging.DEBUG
+# log_level = logging.INFO
 log_level = logging.ERROR
 
-#log_file_path = '/tmp/foobar.log'
+# log_file_path = '/tmp/foobar.log'
 log_file_path: Optional[str] = None
 
-def create_logger( log_file_path: Optional[str], log_level:int ) -> logging.Logger:
+
+def create_logger(log_file_path: Optional[str], log_level: int) -> logging.Logger:
     '''
     Get the (root) logger object to use for logging.
     '''
-    logging.basicConfig( level=log_level, filename=log_file_path,
-        format=msg_format, datefmt=date_format )
+    logging.basicConfig(
+        level=log_level,
+        filename=log_file_path,
+        format=msg_format,
+        datefmt=date_format)
     return logging.getLogger()
 
-log = create_logger( log_file_path, log_level )
 
-#def get_logger() -> logging.Logger:
-#    return log
+log = create_logger(log_file_path, log_level)
+
 
 class LinksCheckerSpider(Spider):
     '''
@@ -40,8 +43,10 @@ class LinksCheckerSpider(Spider):
     '''
     name = 'links_checker'
 
-    def __init__(self, allowed_domains: Optional[List[str]]=None,
-            start_urls: Optional[List[str]]=None) -> None:
+    def __init__(
+            self,
+            allowed_domains: Optional[List[str]] = None,
+            start_urls: Optional[List[str]] = None) -> None:
         super().__init__()
 
         # self.name = name
@@ -65,7 +70,7 @@ class LinksCheckerSpider(Spider):
             self.logger.error('Broken: %s', response.url)
             return
 
-        #self.logger.info("Total ad divs: %s", len(ad_divs))
+        # self.logger.info("Total ad divs: %s", len(ad_divs))
         self.logger.debug('parse: %s', response.url) #response.body
         # extract all links from page
         all_links = response.xpath('*//a/@href').extract()
@@ -86,6 +91,7 @@ class LinksCheckerSpider(Spider):
             #title = response.xpath('//title/text()').get() # get() will replace extract() in the future
         return
 
+
 def main() -> None:
 
     def adjust_scrapy_logging() -> None:
@@ -100,13 +106,15 @@ def main() -> None:
         '''
         parser = argparse.ArgumentParser(
             description="Crawl the site and identify broken links saving these into `site.json`.")
-        parser.add_argument('-v', '--verbose', action='count', default=0,
+        parser.add_argument(
+            '-v', '--verbose', action='count', default=0,
             help='make helpful noises, combine for extra verbosity, e.g. -vvv')
-        parser.add_argument('site', type=str,
+        parser.add_argument(
+            'site', type=str,
             help='DNS or IP address of the site to crawl')
         args = parser.parse_args()
 
-        #print('args', args)
+        # print('args', args)
         return args.verbose, args.site
 
     verbose, site = parse_args()
@@ -118,7 +126,7 @@ def main() -> None:
     else:
         log_level = logging.DEBUG
 
-    log.setLevel( log_level )
+    log.setLevel(log_level)
     log.debug("Verifying DNS name '%s'", site)
     try:
         socket.gethostbyname(site)
@@ -139,12 +147,15 @@ def main() -> None:
 
     adjust_scrapy_logging()
 
-    c.crawl(LinksCheckerSpider, allowed_domains=[site],
-        start_urls=[ f'http://{site}/'])
+    c.crawl(
+        LinksCheckerSpider,
+        allowed_domains=[site],
+        start_urls=[f'http://{site}/'])
     c.start()
     c.join()
     log.debug("See '%s.json' for results", site)
     return
+
 
 if __name__ == "__main__":
     main()
