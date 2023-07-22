@@ -31,24 +31,17 @@ From [primer](https://realpython.com/python-virtual-environments-a-primer/):
 
 ## Usage
 
-```console
-alex@latitude7490:~/Projects/pycrawl/ > source venv/bin/activate
-(venv) alex@latitude7490:~/Projects/pycrawl/ >
+To activate the venv:
 
-(venv) alex@latitude7490:~/Projects/pycrawl/ > python3 main.py -h
-usage: main.py [-h] [-v] site
+```sh
+source venv/bin/activate
+```
+Usage:
+```sh
+python3 main.py -h
+```
 
-Crawl the site and identify broken links saving these into `site.json`.
-
-positional arguments:
-  site           DNS or IP address of the site to crawl
-
-options:
-  -h, --help     show this help message and exit
-  -v, --verbose  make helpful noises, combine for extra verbosity, e.g. -vvv
-
-(venv) alex@latitude7490:~/Projects/pycrawl/ > python3 main.py asokolsky.github.io
-INFO: Scrapy 2.6.3 started (bot: scrapybot)
-INFO: Versions: lxml 4.9.1.0, libxml2 2.9.14, cssselect 1.1.0, parsel 1.6.0, w3lib 2.0.1, Twisted 22.8.0, Python 3.10.6 (main, Aug 10 2022, 11:40:04) [GCC 11.3.0], pyOpenSSL 22.1.0 (OpenSSL 3.0.5 5 Jul 2022), cryptography 38.0.1, Platform Linux-5.15.0-50-generic-x86_64-with-glibc2.35
-(venv) alex@latitude7490:~/Projects/pycrawl/ >
+Use it:
+```sh
+python3 main.py -vv asokolsky.github.io
 ```
