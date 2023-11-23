@@ -7,7 +7,8 @@ in order to identify imperfections, such as broken links.
 
 From [primer](https://realpython.com/python-virtual-environments-a-primer/):
 
-* create it, if it is not there yet: `python3 -m venv venv`
+* create it, if it is not there yet: `python3 -m venv .venv`
+or just `make venv`
 * activate it `source venv/bin/activate`
 * install requirements `python3 -m pip install -r requirements.txt`
 * install new packages if needed...
