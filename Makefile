@@ -25,7 +25,7 @@ help:										## Shows the help
 venv: $(VENV)/bin/activate                  ## Activate the venv
 
 $(VENV)/bin/activate: requirements.txt
-	$(PYTHON) -m venv $(VENV)
+	python3 -m venv $(VENV)
 	$(PIP) install -r requirements.txt
 
 run: venv									## Execute python program
