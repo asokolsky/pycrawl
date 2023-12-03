@@ -29,7 +29,7 @@ $(VENV)/bin/activate: requirements.txt
 	$(PIP) install -r requirements.txt
 
 run: venv									## Execute python program
-	$(PYTHON) main.py
+	$(PYTHON) main.py -vv $(SITE)
 
 test: venv									## Execute python tests
 	$(PYTHON) -m unittest -v *_test.py
@@ -39,5 +39,5 @@ clean:										## Cleanup the artifacts
 	find . -name __pycache__ | xargs rm -rf
 
 #
-# Usage: make VENV=my_venv run
+# Usage: make VENV=my_venv run SITE=asokolsky.github.io
 #

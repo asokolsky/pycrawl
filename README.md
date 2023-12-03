@@ -32,17 +32,21 @@ or just `make venv`
 
 ## Usage
 
-To activate the venv:
+TLDR:
 
 ```sh
-source venv/bin/activate
+make run SITE=asokolsky.github.io
 ```
-Usage:
+
+OR:
+
+* create the venv: `make venv`
+* activate the venv: `source .venv/bin/activate`
+* use it:
 ```sh
 python3 main.py -h
 ```
-
-Use it:
+or:
 ```sh
 python3 main.py -vv asokolsky.github.io
 ```
