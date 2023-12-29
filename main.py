@@ -60,6 +60,7 @@ class LinksCheckerSpider(Spider):
         else:
             self.start_urls = start_urls
 
+        self.parsed_urls = {}
         self.logger.setLevel(log_level)
         return
 
@@ -67,9 +68,14 @@ class LinksCheckerSpider(Spider):
         '''
         '''
         if response.status != 200:
-            self.logger.error('Broken: %s', response.url)
+            self.logger.error('parse (%d): %s', response.status, response.url)
             return
 
+        if self.parsed_urls.get(response.url, False):
+            self.logger.debug('Already parsed: %s', response.url)
+            return
+
+        self.parsed_urls[response.url] = True
         # self.logger.info("Total ad divs: %s", len(ad_divs))
         self.logger.debug('parse: %s', response.url) #response.body
         # extract all links from page
@@ -79,20 +85,31 @@ class LinksCheckerSpider(Spider):
         for link in all_links:
             self.logger.debug('[+] link: %s', link)
             full_link = response.urljoin(link)
-            yield Request(url=full_link, callback=self.on_request)
+            #yield Request(url=full_link, callback=self.on_request)
+            yield response.follow(full_link, self.parse)
         return
 
     def on_request(self, response: TextResponse) -> Generator[Request, None, None]:
+        '''
+        request handler
+        '''
         if response.status != 200:
             self.logger.error('on_request %d: %s', response.status, response.url)
             yield {'url': response.url, 'status': response.status}
         else:
             self.logger.debug('on_request: %s', response.url)
-            #title = response.xpath('//title/text()').get() # get() will replace extract() in the future
+            # title = response.xpath('//title/text()').get() # get() will replace extract() in the future
+            if not self.parsed_urls.get(response.url, False):
+                return self.parse(response)
+            else:
+                yield {'url': response.url, 'status': response.status}
         return
 
 
 def main() -> None:
+    '''
+    Main entry point
+    '''
 
     def adjust_scrapy_logging() -> None:
         logs = ["scrapy", "scrapy.crawler", "scrapy.utils", "scrapy.utils.log"]
