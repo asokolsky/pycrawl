@@ -13,3 +13,4 @@ venv/
 dmypy.json
 
 *.json
+.docker-password

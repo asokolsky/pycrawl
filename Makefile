@@ -29,7 +29,7 @@ $(VENV)/bin/activate: requirements.txt
 	$(PIP) install -r requirements.txt
 
 run: venv									## Execute python program
-	$(PYTHON) main.py -vv $(SITE)
+	$(PYTHON) main.py $(SITE)
 
 test: venv									## Execute python tests
 	$(PYTHON) -m unittest -v *_test.py
@@ -38,6 +38,16 @@ clean:										## Cleanup the artifacts
 	rm -rf $(VENV) .mypy_cache
 	find . -name __pycache__ | xargs rm -rf
 
-#
-# Usage: make VENV=my_venv run SITE=asokolsky.github.io
-#
+DOCKER_USERNAME ?= asokolsky
+APPLICATION_NAME ?= pycrawl
+GIT_HASH ?= $(shell git log --format="%h" -n 1)
+
+docker-build:								## Build docker image
+	docker build --tag ${DOCKER_USERNAME}/${APPLICATION_NAME}:${GIT_HASH} .
+
+release:
+	cat ./.docker-password | docker login --username asokolsky --password-stdin
+	docker push ${DOCKER_USERNAME}/${APPLICATION_NAME}:${GIT_HASH}
+	docker pull ${DOCKER_USERNAME}/${APPLICATION_NAME}:${GIT_HASH}
+	docker tag  ${DOCKER_USERNAME}/${APPLICATION_NAME}:${GIT_HASH} ${DOCKER_USERNAME}/${APPLICATION_NAME}:latest
+	docker push ${DOCKER_USERNAME}/${APPLICATION_NAME}:latest

@@ -50,3 +50,26 @@ or:
 ```sh
 python3 main.py -vv asokolsky.github.io
 ```
+
+## Docker-izing the app
+
+Added [Dockerfile](Dockerfile) - see:
+
+* the [Dockerfile reference](https://docs.docker.com/engine/reference/builder/)
+* [Python image](https://hub.docker.com/_/python)
+
+### Build a pycrawl docker image
+
+```sh
+docker build -t pycrawl .
+```
+or just
+```sh
+make docker-build
+```
+
+### Using it
+
+```sh
+docker run asokolsky/pycrawl -v "asokolsky.github.io"
+```
