@@ -65,7 +65,12 @@ docker build -t pycrawl .
 ```
 or just
 ```sh
-make docker-build
+make build
+```
+
+Then publish it:
+```sh
+make release
 ```
 
 ### Using it

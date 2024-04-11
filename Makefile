@@ -9,7 +9,7 @@ PYTHON=$(VENV)/bin/python3
 PIP=$(VENV)/bin/pip
 
 # targets which are NOT files
-.PHONY: help venv run test clean
+.PHONY: help venv run test clean build release
 
 help:										## Shows the help
 	@echo 'Usage: make <TARGETS>'
@@ -42,11 +42,11 @@ DOCKER_USERNAME ?= asokolsky
 APPLICATION_NAME ?= pycrawl
 GIT_HASH ?= $(shell git log --format="%h" -n 1)
 
-docker-build:								## Build docker image
+build:								## Build a docker image
 	docker build --tag ${DOCKER_USERNAME}/${APPLICATION_NAME}:${GIT_HASH} .
 
-release:
-	cat ./.docker-password | docker login --username asokolsky --password-stdin
+release:							## Release the docker image
+	cat ./.docker-password | docker login --username ${DOCKER_USERNAME} --password-stdin
 	docker push ${DOCKER_USERNAME}/${APPLICATION_NAME}:${GIT_HASH}
 	docker pull ${DOCKER_USERNAME}/${APPLICATION_NAME}:${GIT_HASH}
 	docker tag  ${DOCKER_USERNAME}/${APPLICATION_NAME}:${GIT_HASH} ${DOCKER_USERNAME}/${APPLICATION_NAME}:latest
