@@ -8,6 +8,7 @@ from scrapy.spiders import Spider
 import socket
 # from sys import stderr
 from typing import Generator, List, Optional, Tuple
+from urllib.parse import urlparse
 
 # msg_format = "%(asctime)s.%(msecs)03d %(levelname)s %(threadName)s %(filename)s:%(lineno)s %(message)s"
 # msg_format = "%(asctime)s.%(msecs)03d %(levelname)s %(message)s"
@@ -117,7 +118,7 @@ def main() -> None:
             logging.getLogger(n).setLevel(log_level)
         return
 
-    def parse_args() -> Tuple[int, str]:
+    def parse_args() -> Tuple[int, str, str]:
         '''
         Parse arguments, return (verbose, site)
         '''
@@ -128,13 +129,23 @@ def main() -> None:
             help='make helpful noises, combine for extra verbosity, e.g. -vvv')
         parser.add_argument(
             'site', type=str,
-            help='DNS or IP address of the site to crawl')
+            help='DNS or IP address of the site to crawl or a URL')
         args = parser.parse_args()
 
-        # print('args', args)
-        return args.verbose, args.site
+        site = ''
+        start = ''
+        pr = urlparse(args.site)
+        if pr.scheme:
+            start = args.site
+            site = pr.netloc
+        else:
+            site = pr.path
+            start = f'http://{site}/'
 
-    verbose, site = parse_args()
+        print('args', args, site, start, pr)
+        return args.verbose, site, start
+
+    verbose, site, start = parse_args()
     global log_level
     if verbose == 0:
         log_level = logging.ERROR
@@ -164,10 +175,7 @@ def main() -> None:
 
     adjust_scrapy_logging()
 
-    c.crawl(
-        LinksCheckerSpider,
-        allowed_domains=[site],
-        start_urls=[f'http://{site}/'])
+    c.crawl(LinksCheckerSpider, allowed_domains=[site], start_urls=[start])
     c.start()
     c.join()
     log.debug("See '%s.json' for results", site)

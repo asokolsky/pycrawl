@@ -29,7 +29,7 @@ $(VENV)/bin/activate: requirements.txt
 	$(PIP) install -r requirements.txt
 
 run: venv									## Execute python program
-	$(PYTHON) main.py $(SITE)
+	$(PYTHON) main.py -v $(SITE)
 
 test: venv									## Execute python tests
 	$(PYTHON) -m unittest -v *_test.py
