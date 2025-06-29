@@ -87,7 +87,10 @@ class LinksCheckerSpider(Spider):
             self.logger.debug('[+] link: %s', link)
             full_link = response.urljoin(link)
             #yield Request(url=full_link, callback=self.on_request)
-            yield response.follow(full_link, self.parse)
+            try:
+                yield response.follow(full_link, self.parse)
+            except ValueError:
+                continue
         return
 
     def on_request(self, response: TextResponse) -> Generator[Request, None, None]:
