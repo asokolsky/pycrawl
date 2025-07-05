@@ -1,4 +1,0 @@
-requests
-requests-file
-Scrapy
-urllib3

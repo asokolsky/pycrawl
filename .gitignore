@@ -1,16 +1,22 @@
-__pycache__/
-__pypackages__/
+__pycache__
+__pypackages__
 
-.venv/
-venv/
+.venv
+.ruff_cache
 
 .scrapy
 
 
 # mypy
-.mypy_cache/
+.mypy_cache
 .dmypy.json
 dmypy.json
+.ruff_cache
 
 *.json
 .docker-password
+
+# No need to duplicate what's in pyproject.toml
+uv.lock
+# No need to duplicate what's in pyproject.toml
+.python-version

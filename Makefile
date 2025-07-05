@@ -5,11 +5,8 @@ export PROJECT_ROOT = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 # define the name of the virtual environment directory
 VENV:=.venv
 
-PYTHON=$(VENV)/bin/python3
-PIP=$(VENV)/bin/pip
-
 # targets which are NOT files
-.PHONY: help venv run test clean build release
+.PHONY: help run test clean lint format mypy build release
 
 help:										## Shows the help
 	@echo 'Usage: make <TARGETS>'
@@ -21,21 +18,28 @@ help:										## Shows the help
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-25s\033[0m %s\n", $$1, $$2}'
 	@echo ''
 
-# venv is a shortcut target
-venv: $(VENV)/bin/activate                  ## Activate the venv
+run:									## Execute python program
+	uv run main.py -v $(SITE)
 
-$(VENV)/bin/activate: requirements.txt
-	python3 -m venv $(VENV)
-	$(PIP) install -r requirements.txt
+test:									## Execute python tests
+	uv run -m unittest -v *_test.py
 
-run: venv									## Execute python program
-	$(PYTHON) main.py -v $(SITE)
+lint:									## Lint python sources
+# check imports
+	uv run ruff check -v --select I .
+	uv run ruff check -v .
 
-test: venv									## Execute python tests
-	$(PYTHON) -m unittest -v *_test.py
+format:									## Format python sources
+# sort imports
+	uv run ruff check --select I --fix .
+# reformat sources
+	uv run ruff format -v .
+
+mypy:									## Check typing
+	uv run mypy .
 
 clean:										## Cleanup the artifacts
-	rm -rf $(VENV) .mypy_cache
+	rm -rf $(VENV) .mypy_cache .ruff_cache
 	find . -name __pycache__ | xargs rm -rf
 
 DOCKER_USERNAME ?= asokolsky
@@ -45,7 +49,7 @@ GIT_HASH ?= $(shell git log --format="%h" -n 1)
 build:								## Build a docker image
 	docker build --tag ${DOCKER_USERNAME}/${APPLICATION_NAME}:${GIT_HASH} .
 
-release:							## Release the docker image
+release: .docker-password					## Release the docker image
 	cat ./.docker-password | docker login --username ${DOCKER_USERNAME} --password-stdin
 	docker push ${DOCKER_USERNAME}/${APPLICATION_NAME}:${GIT_HASH}
 	docker pull ${DOCKER_USERNAME}/${APPLICATION_NAME}:${GIT_HASH}
