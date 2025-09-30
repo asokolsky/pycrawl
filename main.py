@@ -68,7 +68,7 @@ class LinksCheckerSpider(Spider):
         self.logger.setLevel(log_level)
         return
 
-    def parse(self, response: TextResponse) -> Generator[Request, None, None]:
+    def parse(self, response: TextResponse) -> Generator[Request]:
         """
         Parse the response.
         """
@@ -97,7 +97,7 @@ class LinksCheckerSpider(Spider):
                 continue
         return
 
-    def on_request(self, response: TextResponse) -> Generator[Request, None, None]:
+    def on_request(self, response: TextResponse) -> Generator[Request]:
         """
         Request handler.
         """
